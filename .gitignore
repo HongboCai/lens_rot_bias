@@ -1,0 +1,4 @@
+.ipynb_checkpoints
+*.fits
+ltximg
+__pycache__
