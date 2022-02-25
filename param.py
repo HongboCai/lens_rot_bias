@@ -2,21 +2,16 @@ import math
 
 # repository path
 repodir = '/global/cscratch1/sd/hongbo/lens_rot_bias/'
-# input power spectra path
-psdir = repodir + 'ps/' 
 
-# generated map fits files path
-outmapdir = repodir + 'output/maps/'
-# generated power spectra path 
-outpsdir = repodir + 'output/ps/' 
+# input path and input power spectra files
+indir = repodir + 'input/'
+lenspotental_cl = indir + 'ps/cosmo2017_10K_acc3_lenspotentialCls.dat'
 
-# input power spectrum files path
-lenspotental_cl = psdir + 'cosmo2017_10K_acc3_lenspotentialCls.dat' 
 
-# generated map fits files
-cmb_alm_fits = outmapdir + 'fullskyLensedCMB_alm.fits'
-kap_alm_fits = outmapdir + 'kap_alm.fits'
-
+# output path and output alms files
+outdir = repodir + 'output/'
+cmb_alm_fits = outdir + 'maps/fullskyLensedCMB_alm.fits'
+kap_alm_fits = outdir + 'maps/kap_alm.fits'
 
 
 
@@ -25,6 +20,8 @@ px_arcmin = 1.
 decmax = 45
 width_deg = 30
 npix = int(width_deg/(px_arcmin/60.))
+lmax = 6000
+lmax_write = 6000
 
 
 # loop parameters
