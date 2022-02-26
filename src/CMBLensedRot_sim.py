@@ -5,17 +5,18 @@ from pixell import enmap, utils, lensing, aberration
 from pixell import powspec, curvedsky
 import numpy as np, healpy as hp, logging, os, os.path as op
 import argparse
+import pdb
 
 # add the parent dir in the python path
 sys.path.append(os.path.dirname(os.getcwd()))
-import param
+import param as p
 
 defaults = {
     'odir': '../simMaps',
-    'nsims': 1,
-    'lmax': param.lmax,
-    'lmax_write': param.lmax_write,
-    'pix_size': 4,
+    'nsims': p.nsims,
+    'lmax': p.lmax,
+    'lmax_write': p.lmax_write,
+    'pix_size': p.px_arcmin,
     'A_cb': 1E-5, 
     'alpha_ps': '../inputPs/claa_A1E-5.txt'
 }
@@ -64,7 +65,8 @@ for isim in range(args.nsims):
     # rotate polarization
     print("Rotating polarization by alpha")
     rot_tqu_map = enmap.rotate_pol(tqu_map, alpha_map)
-
+    # pdb.set_trace()
+    
     # convert to alm
     print("Converting map to alm")
     rot_teb_alm = curvedsky.map2alm(rot_tqu_map, spin=[0,2], lmax=args.lmax)
@@ -73,7 +75,7 @@ for isim in range(args.nsims):
 
     # write lensed rotated CMB alm
     print("writing CMBLensedRot_fullsky_alm.fits")
-    hp.write_alm(cmb_dir + f"/CMBLensedRot_fullsky_alm_{isim:03d}.fits", np.complex64(rot_teb_alm), overwrite=True)
+    hp.write_alm(cmb_dir + f"/CMBLensedRot_fullsky_alm_{isim:03d}.fits", np.complex128(rot_teb_alm), overwrite=True)
 
 
 

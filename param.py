@@ -13,13 +13,11 @@ outdir = repodir + 'output/'
 cmb_alm_fits = outdir + 'maps/fullskyLensedCMB_alm.fits'
 kap_alm_fits = outdir + 'maps/kap_alm.fits'
 
-
+# sim number
+nsims = 1
 
 # geometry parameters
 px_arcmin = 1.
-decmax = 45
-width_deg = 30
-npix = int(width_deg/(px_arcmin/60.))
 lmax = 6000
 lmax_write = 6000
 

@@ -11,14 +11,14 @@ import argparse
 
 # add the parent dir in the python path
 sys.path.append(os.path.dirname(os.getcwd()))
-import param
+import param as p
 
 defaults = {
     'odir': '../simMaps',
-    'nsims': 1,
-    'lmax': param.lmax,
-    'lmax_write': param.lmax_write,
-    'pix_size': 4,
+    'nsims': p.nsims,
+    'lmax': p.lmax,
+    'lmax_write': p.lmax_write,
+    'pix_size': p.px_arcmin,
     'phi_ps': '../inputPs/cosmo2017_10K_acc3_lenspotentialCls.dat',
 }
 
@@ -73,7 +73,7 @@ for isim in range(args.nsims):
     # generate phi and kappa alm, write kappa_alm
     phi_alm = curvedsky.rand_alm(clpp, lmax=args.lmax, seed=phi_seed)
     kappa_alm = hp.almxfl(phi_alm, factor)
-    hp.write_alm(cmb_seed + f'/kappa_fullsky_alm_{isim:03d}.fits', kappa_alm, overwrite=True)
+    hp.write_alm(cmb_dir + f'/kappa_fullsky_alm_{isim:03d}.fits', kappa_alm, overwrite=True)
     del phi_alm, kappa_alm
 
 
