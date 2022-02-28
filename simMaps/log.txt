@@ -1,3 +1,3 @@
-2022-02-25 13:12:29,020 INFO doing sim 0, calling lensing.rand_map
-2022-02-25 13:18:16,605 INFO calling curvedsky.map2alm
-2022-02-25 13:18:32,912 INFO writing to disk, filename is ../simMaps/CMBLensed_fullsky_alm_000.fits
+2022-02-26 15:24:38,542 INFO doing sim 1, calling lensing.rand_map
+2022-02-26 15:29:58,346 INFO calling curvedsky.map2alm
+2022-02-26 15:30:16,228 INFO writing to disk, filename is ../simMaps/CMBLensed_fullsky_alm_001.fits

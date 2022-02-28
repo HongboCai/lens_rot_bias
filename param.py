@@ -7,14 +7,8 @@ repodir = '/global/cscratch1/sd/hongbo/lens_rot_bias/'
 indir = repodir + 'input/'
 lenspotental_cl = indir + 'ps/cosmo2017_10K_acc3_lenspotentialCls.dat'
 
-
 # output path and output alms files
 outdir = repodir + 'output/'
-cmb_alm_fits = outdir + 'maps/fullskyLensedCMB_alm.fits'
-kap_alm_fits = outdir + 'maps/kap_alm.fits'
-
-# sim number
-nsims = 1
 
 # geometry parameters
 px_arcmin = 1.

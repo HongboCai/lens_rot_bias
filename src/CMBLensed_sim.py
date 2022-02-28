@@ -15,7 +15,6 @@ import param as p
 
 defaults = {
     'odir': '../simMaps',
-    'nsims': p.nsims,
     'lmax': p.lmax,
     'lmax_write': p.lmax_write,
     'pix_size': p.px_arcmin,
@@ -25,8 +24,8 @@ defaults = {
 parser = argparse.ArgumentParser()
 # Parse command line
 parser = argparse.ArgumentParser(description='Generate lensed CMB')
+parser.add_argument("--sim_num", type=int, help="the number of simulation")
 parser.add_argument("--odir",       type=str, default=defaults['odir'], help="Output directory")
-parser.add_argument("--nsims",      type=int, default=defaults['nsims'],      help="Number of sims")
 parser.add_argument("--lmax",       type=int, default=defaults['lmax'],       help="Max multipole for lensing")
 parser.add_argument("--lmax-write", type=int, default=defaults['lmax_write'], help="Max multipole to write")
 parser.add_argument("--pix-size",   type=float, default=defaults['pix_size'], help="Pixel width in arcmin")
@@ -49,31 +48,33 @@ phi_ps[1:, 0, :] = 0.
 ls, clpp = np.loadtxt(args.phi_ps, usecols=(0,5), unpack=True)
 factor = 0.5 * ls**2
 
-for isim in range(args.nsims):
-    logging.info(f'doing sim {isim}, calling lensing.rand_map')
-    cmb_seed = (isim, 0, 0, 0)
-    phi_seed = (isim, 0, 2, 0)
 
-    # generate and write lensed CMB alm
-    l_tqu_map, = lensing.rand_map((3,)+shape, wcs, phi_ps,
-                                  lmax=args.lmax,
-                                  output="l",
-                                  phi_seed=phi_seed,
-                                  seed=cmb_seed,
-                                  verbose=True)
-    
-    logging.info('calling curvedsky.map2alm')
-    alm = curvedsky.map2alm(l_tqu_map, lmax=args.lmax_write, spin=[0,2])
+isim = args.sim_num
 
-    filename = cmb_dir + f"/CMBLensed_fullsky_alm_{isim:03d}.fits"
-    logging.info(f'writing to disk, filename is {filename}')
-    hp.write_alm(filename, np.complex64(alm), overwrite=True)
-    del alm
+logging.info(f'doing sim {isim}, calling lensing.rand_map')
+cmb_seed = (isim, 0, 0, 0)
+phi_seed = (isim, 0, 2, 0)
+
+# generate and write lensed CMB alm
+l_tqu_map, = lensing.rand_map((3,)+shape, wcs, phi_ps,
+                            lmax=args.lmax,
+                            output="l",
+                            phi_seed=phi_seed,
+                            seed=cmb_seed,
+                            verbose=True)
     
-    # generate phi and kappa alm, write kappa_alm
-    phi_alm = curvedsky.rand_alm(clpp, lmax=args.lmax, seed=phi_seed)
-    kappa_alm = hp.almxfl(phi_alm, factor)
-    hp.write_alm(cmb_dir + f'/kappa_fullsky_alm_{isim:03d}.fits', kappa_alm, overwrite=True)
-    del phi_alm, kappa_alm
+logging.info('calling curvedsky.map2alm')
+alm = curvedsky.map2alm(l_tqu_map, lmax=args.lmax_write, spin=[0,2])
+
+filename = cmb_dir + f"/CMBLensed_fullsky_alm_{isim:03d}.fits"
+logging.info(f'writing to disk, filename is {filename}')
+hp.write_alm(filename, np.complex64(alm), overwrite=True)
+del alm
+    
+# generate phi and kappa alm, write kappa_alm
+phi_alm = curvedsky.rand_alm(clpp, lmax=args.lmax, seed=phi_seed)
+kappa_alm = hp.almxfl(phi_alm, factor)
+hp.write_alm(cmb_dir + f'/kappa_fullsky_alm_{isim:03d}.fits', kappa_alm, overwrite=True)
+del phi_alm, kappa_alm
 
 
