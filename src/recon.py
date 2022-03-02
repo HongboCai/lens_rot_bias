@@ -1,5 +1,6 @@
 """fullsky reconstruction based on cmblensplus"""
 
+import sys, os
 import healpy as hp, numpy as np
 import os, os.path as op
 import argparse
@@ -10,7 +11,7 @@ from orphics import maps, stats, cosmology
 from pixell import enmap, utils as u
 from enlib import bench
 
-from cmblensplus import curvedsky
+import curvedsky
 # add the parent dir in the python path
 sys.path.append(os.path.dirname(os.getcwd()))
 import param as p
@@ -30,18 +31,18 @@ def log(text):
 parser = argparse.ArgumentParser()
 
 parser.add_argument('--experiment', type=str, help='experiment name')
-parser.add_argument_group('--sim_num', type=int, help='the number of simulation')
+parser.add_argument('--sim_num', type=int, help='the number of simulation')
 parser.add_argument("--mapdir",       type=str, default=defaults['mapdir'], help="Output directory")
 
 parser.add_argument('--nlev_t', type=float, help='noise level of temperature field, in ukarcmin', default=7)
-parser.add_argument('--beam-arcmin', type=float, help='beam_arcmin', default=1.4)
+parser.add_argument('--beam_arcmin', type=float, help='beam_arcmin', default=1.4)
 parser.add_argument('--ellmin', type=int, help='ellmin of CMB', default=30)
 parser.add_argument('--ellmax', type=int, help='ellmax of CMB', default=3000)
-parser.add_argument('--delta-L', type=int, help='delta_L of Kappa', default=150)
+parser.add_argument('--delta_L', type=int, help='delta_L of Kappa', default=150)
 parser.add_argument('--pure', type=str, default='standard', help='purify method')
 parser.add_argument('--logfile', default='log.txt')
-parser.add_argument('--add-noise', action='store_true')
-parser.add_argument('--nside', default=512)
+parser.add_argument('--add-noise', action='store_false')
+parser.add_argument('--nside', default=1024)
 
 args = parser.parse_args()
 
@@ -50,6 +51,7 @@ if not(op.exists(defaults['odir'])): os.makedirs(defaults['odir'])
 
 # parse parameters into compatible dict
 params = {} # params for lensing reconstruction
+params['experiment'] = args.experiment
 params['nlev_t'] = args.nlev_t
 params['nlev_p'] = args.nlev_t*2**0.5
 params['beam_arcmin'] = args.beam_arcmin
@@ -85,8 +87,8 @@ with bench.show('generating maps with alm2map'):
     TQU_rot_map = hp.alm2map(teb_rot_alm+nlm, nside=args.nside, pol=True)
     kap_map = hp.alm2map(kap_alm, nside=args.nside)
     del kap_alm
-    cmb_cl = hp.alm2cl(teb_alm)
-    cmb_rot_cl = hp.alm2cl(teb_rot_alm)
+    cmb_cl = hp.alm2cl(np.complex128(teb_alm))
+    cmb_rot_cl = hp.alm2cl(np.complex128(teb_rot_alm))
 
 # inverse variance filtering
 theory = cosmology.default_theory()
@@ -149,9 +151,7 @@ data_dict['EB_rot_inkap_x_reckap'] = EB_rot_inkap_x_reckap
 data_dict['EB_rot_reckap_x_reckap'] = EB_rot_inkap_x_reckap
 
 data_df = pd.DataFrame(data_dict)
-data_df.to_csv(defaults['odir'] + '_%s_%s_%s.csv' %
-               (params['experiment'], params['ellmin']', params['ellmax']),
-               index=False)
+data_df.to_csv(defaults['odir'] + '_%s_%s_%s.csv' %(params['experiment'], params['ellmin'], params['ellmax']), index=False)
 
 
 

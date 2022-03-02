@@ -1,0 +1,14 @@
+#!/bin/bash
+#SBATCH --qos regular
+#SBATCH --constraint=haswell
+#SBATCH -N 1
+#SBATCH -t 00:30:00
+#SBATCH --ntasks-per-node=12
+#SBATCH --license=SCRATCH
+#SBATCH --output=/global/cscratch1/sd/hongbo/lens_rot_bias/reconJobs/slurmjob.log.6
+
+cd /global/cscratch1/sd/hongbo/lens_rot_bias/src
+
+OMP_NUM_THREADS=4 python recon.py --sim_num 7 --experiment 'CMB_S3' --nlev_t 7 --beam_arcmin 1.4 --ellmin 30 --ellmax 3000 --delta_L 150 --pure no & sleep 1
+OMP_NUM_THREADS=4 python recon.py --sim_num 7 --experiment 'CMB_S3' --nlev_t 7 --beam_arcmin 1.4 --ellmin 30 --ellmax 4000 --delta_L 200 --pure no & sleep 1
+wait
