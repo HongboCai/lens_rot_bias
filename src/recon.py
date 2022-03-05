@@ -18,7 +18,8 @@ import param as p
 
 defaults = {
     'mapdir': '../simMaps',
-    'odir': '../output/ps/'
+    'odir': '../output/recon_ps/',
+    'lmax_write': p.lmax_write
 }
 
 def log(text):
@@ -69,7 +70,7 @@ with bench.show("read alm"):
     kap_alm = hp.read_alm(cmb_dir + f'/kappa_fullsky_alm_{isim:03d}.fits')
 
 lmax = hp.Alm.getlmax(teb_alm.shape[-1])
-
+lmax = defaults['lmax_write']
 # generate noise realization
 if args.add_noise:
     ls  = np.arange(lmax+1)
@@ -80,15 +81,15 @@ else:
     nlm = 0
     nl  = [0,0,0,0]
 
-# generate T,E,B,inkap maps
-log('generating maps with alm2map')
-with bench.show('generating maps with alm2map'):
-    TQU_map = hp.alm2map(teb_alm+nlm, nside=args.nside, pol=True)
-    TQU_rot_map = hp.alm2map(teb_rot_alm+nlm, nside=args.nside, pol=True)
-    kap_map = hp.alm2map(kap_alm, nside=args.nside)
-    del kap_alm
-    cmb_cl = hp.alm2cl(np.complex128(teb_alm))
-    cmb_rot_cl = hp.alm2cl(np.complex128(teb_rot_alm))
+# # generate T,E,B,inkap maps
+# log('generating maps with alm2map')
+# with bench.show('generating maps with alm2map'):
+#     TQU_map = hp.alm2map(teb_alm+nlm, nside=args.nside, pol=True)
+#     TQU_rot_map = hp.alm2map(teb_rot_alm+nlm, nside=args.nside, pol=True)
+#     kap_map = hp.alm2map(kap_alm, nside=args.nside)
+#     del kap_alm
+#     cmb_cl = hp.alm2cl(np.complex128(teb_alm))
+#     cmb_rot_cl = hp.alm2cl(np.complex128(teb_rot_alm))
 
 # inverse variance filtering
 theory = cosmology.default_theory()
@@ -97,6 +98,8 @@ clee = theory.lCl('EE', ls)
 clbb = theory.lCl('BB', ls)
 oclee = clee # + nlee
 oclbb = clbb # + nlbb
+
+oclee[0], oclee[1], oclbb[0], oclbb[1] = 1, 1, 1, 1
 Elm = hp.almxfl(teb_alm[1], 1/oclee)
 Blm = hp.almxfl(teb_alm[2], 1/oclbb)
 Elm_rot = hp.almxfl(teb_rot_alm[1], 1/oclee)
@@ -130,28 +133,30 @@ reckap_alm *= Al[0][:,None]
 reckap_rot_alm *= Al[0][:,None]
 
 # get input kappa alm
-kap_alm = hp.map2alm(kap_map, lmax=params['ellmax'])
-kap_alm = curvedsky.utils.lm_healpy2healpix(kap_alm, params['ellmax'])
+
+kap_alm = curvedsky.utils.lm_healpy2healpix(kap_alm, lmax)
 
 # compute power spectra
-EB_inkap_x_inkap   = curvedsky.utils.alm2cl(params['ellmax'], kap_alm)
+EB_inkap_x_inkap   = curvedsky.utils.alm2cl(params['ellmax'], kap_alm[:imax,:imax])
 
-EB_inkap_x_reckap  = curvedsky.utils.alm2cl(params['ellmax'], kap_alm, reckap_alm[0])
+EB_inkap_x_reckap  = curvedsky.utils.alm2cl(params['ellmax'], kap_alm[:imax,:imax], reckap_alm[0])
+EB_rot_inkap_x_reckap  = curvedsky.utils.alm2cl(params['ellmax'], kap_alm[:imax,:imax], reckap_rot_alm[0])
+
 EB_reckap_x_reckap = curvedsky.utils.alm2cl(params['ellmax'], reckap_alm[0])
-
-EB_rot_inkap_x_reckap  = curvedsky.utils.alm2cl(params['ellmax'], kap_alm, reckap_rot_alm[0])
 EB_rot_reckap_x_reckap = curvedsky.utils.alm2cl(params['ellmax'], reckap_rot_alm[0])
 
 # # Store data in a dictionary
 data_dict = {}
 data_dict['EB_inkap_x_inkap'] = EB_inkap_x_inkap
+
 data_dict['EB_inkap_x_reckap'] = EB_inkap_x_reckap
-data_dict['EB_reckap_x_reckap'] = EB_inkap_x_reckap
 data_dict['EB_rot_inkap_x_reckap'] = EB_rot_inkap_x_reckap
+
+data_dict['EB_reckap_x_reckap'] = EB_inkap_x_reckap
 data_dict['EB_rot_reckap_x_reckap'] = EB_rot_inkap_x_reckap
 
 data_df = pd.DataFrame(data_dict)
-data_df.to_csv(defaults['odir'] + '_%s_%s_%s.csv' %(params['experiment'], params['ellmin'], params['ellmax']), index=False)
+data_df.to_csv(defaults['odir'] + f'%s_%s_%s_%s.csv' %(params['experiment'], isim, params['ellmin'],params['ellmax']), index=False)
 
 
 

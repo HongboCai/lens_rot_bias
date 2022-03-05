@@ -44,8 +44,10 @@ phi_ps = powspec.read_camb_full_lens(args.phi_ps)
 phi_ps[0, 1:, :] = 0.
 phi_ps[1:, 0, :] = 0.
 
-# get clpp and claa
+# get clpp
 ls, clpp = np.loadtxt(args.phi_ps, usecols=(0,5), unpack=True)
+ls = np.concatenate(([0,1], ls))
+clpp = np.concatenate(([0,0], clpp))
 factor = 0.5 * ls**2
 
 
@@ -74,7 +76,10 @@ del alm
 # generate phi and kappa alm, write kappa_alm
 phi_alm = curvedsky.rand_alm(clpp, lmax=args.lmax, seed=phi_seed)
 kappa_alm = hp.almxfl(phi_alm, factor)
+
+# hp.write_alm(cmb_dir + f'/phi_fullsky_alm_{isim:03d}.fits', phi_alm, overwrite=True)
 hp.write_alm(cmb_dir + f'/kappa_fullsky_alm_{isim:03d}.fits', kappa_alm, overwrite=True)
+
 del phi_alm, kappa_alm
 
 
