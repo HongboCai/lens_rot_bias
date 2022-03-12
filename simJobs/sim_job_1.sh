@@ -9,9 +9,9 @@
 
 cd /global/cscratch1/sd/hongbo/lens_rot_bias/src
 
-OMP_NUM_THREADS=4 python CMBLensed_sim.py --sim_num=0 & sleep 1
-OMP_NUM_THREADS=4 python CMBLensed_sim.py --sim_num=1 & sleep 1
+OMP_NUM_THREADS=4 python CMBLensed_sim.py --sim_num=2 & sleep 1
+OMP_NUM_THREADS=4 python CMBLensed_sim.py --sim_num=3 & sleep 1
 wait
-OMP_NUM_THREADS=4 python CMBLensedRot_sim.py --sim_num=0 & sleep 1
-OMP_NUM_THREADS=4 python CMBLensedRot_sim.py --sim_num=1 & sleep 1
+OMP_NUM_THREADS=4 python CMBLensedRot_sim.py --sim_num=2 & sleep 1
+OMP_NUM_THREADS=4 python CMBLensedRot_sim.py --sim_num=3 & sleep 1
 wait

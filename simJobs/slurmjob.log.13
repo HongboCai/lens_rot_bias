@@ -1,0 +1,49 @@
+Warning: Python module not loaded, you already have Python loaded via conda init
+CMBLensed_sim.py:55: RuntimeWarning: invalid value encountered in true_divide
+  clpp = np.concatenate(([0,0], clpp))/fac
+/global/homes/h/hongbo/.local/cori/3.7-anaconda-2019.07/lib/python3.7/site-packages/pixell/lensing.py:256: RuntimeWarning: invalid value encountered in arcsin
+  ophi   = ipos[1] + np.arcsin(sind*grad[1]/osint)
+/global/homes/h/hongbo/.local/cori/3.7-anaconda-2019.07/lib/python3.7/site-packages/pixell/lensing.py:256: RuntimeWarning: invalid value encountered in arcsin
+  ophi   = ipos[1] + np.arcsin(sind*grad[1]/osint)
+/global/homes/h/hongbo/.local/cori/3.7-anaconda-2019.07/lib/python3.7/site-packages/pixell/lensing.py:260: RuntimeWarning: divide by zero encountered in true_divide
+  A      = grad[1]/(sind*cost/sint+grad[0]*cosd)
+/global/homes/h/hongbo/.local/cori/3.7-anaconda-2019.07/lib/python3.7/site-packages/pixell/utils.py:188: RuntimeWarning: invalid value encountered in remainder
+  return ref + (a-ref+period/2.)%period - period/2.
+Generating alms
+Computing grad map
+Computing observed coordinates
+Computing alpha map
+Computing lensed map
+Rotating polarization
+CMBLensed_sim.py:55: RuntimeWarning: invalid value encountered in true_divide
+  clpp = np.concatenate(([0,0], clpp))/fac
+/global/homes/h/hongbo/.local/cori/3.7-anaconda-2019.07/lib/python3.7/site-packages/pixell/lensing.py:256: RuntimeWarning: invalid value encountered in arcsin
+  ophi   = ipos[1] + np.arcsin(sind*grad[1]/osint)
+/global/homes/h/hongbo/.local/cori/3.7-anaconda-2019.07/lib/python3.7/site-packages/pixell/lensing.py:256: RuntimeWarning: invalid value encountered in arcsin
+  ophi   = ipos[1] + np.arcsin(sind*grad[1]/osint)
+/global/homes/h/hongbo/.local/cori/3.7-anaconda-2019.07/lib/python3.7/site-packages/pixell/lensing.py:260: RuntimeWarning: divide by zero encountered in true_divide
+  A      = grad[1]/(sind*cost/sint+grad[0]*cosd)
+/global/homes/h/hongbo/.local/cori/3.7-anaconda-2019.07/lib/python3.7/site-packages/pixell/utils.py:188: RuntimeWarning: invalid value encountered in remainder
+  return ref + (a-ref+period/2.)%period - period/2.
+Generating alms
+Computing grad map
+Computing observed coordinates
+Computing alpha map
+Computing lensed map
+Rotating polarization
+Loading alpha alm
+Generating alpha map
+writing alpha_fullsky_alm.fits
+Loading cmb alm
+Generating cmb map
+Rotating polarization by alpha
+Converting map to alm
+writing CMBLensedRot_fullsky_alm.fits
+Loading alpha alm
+Generating alpha map
+writing alpha_fullsky_alm.fits
+Loading cmb alm
+Generating cmb map
+Rotating polarization by alpha
+Converting map to alm
+writing CMBLensedRot_fullsky_alm.fits

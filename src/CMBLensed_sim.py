@@ -12,6 +12,7 @@ import argparse
 # add the parent dir in the python path
 sys.path.append(os.path.dirname(os.getcwd()))
 import param as p
+from math import pi
 
 defaults = {
     'odir': '../simMaps',
@@ -47,8 +48,12 @@ phi_ps[1:, 0, :] = 0.
 # get clpp
 ls, clpp = np.loadtxt(args.phi_ps, usecols=(0,5), unpack=True)
 ls = np.concatenate(([0,1], ls))
-clpp = np.concatenate(([0,0], clpp))
-factor = 0.5 * ls**2
+
+fac = (ls*(ls+1))**2/(2*pi)
+fac_lens = 0.5 * ls*(ls+1)
+
+clpp = np.concatenate(([0,0], clpp))/fac
+
 
 
 isim = args.sim_num
@@ -75,7 +80,7 @@ del alm
     
 # generate phi and kappa alm, write kappa_alm
 phi_alm = curvedsky.rand_alm(clpp, lmax=args.lmax, seed=phi_seed)
-kappa_alm = hp.almxfl(phi_alm, factor)
+kappa_alm = hp.almxfl(phi_alm, fac_lens)
 
 # hp.write_alm(cmb_dir + f'/phi_fullsky_alm_{isim:03d}.fits', phi_alm, overwrite=True)
 hp.write_alm(cmb_dir + f'/kappa_fullsky_alm_{isim:03d}.fits', kappa_alm, overwrite=True)

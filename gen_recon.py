@@ -2,12 +2,14 @@ import sys, os, time
 import numpy as np
 import param as p
 
-
+# sim_nums = [i for i in range(100)]
 sim_nums = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-recon_jobs = [1, 2, 3, 4, 5, 6, 7, 8]
+# recon_jobs = [i for i in range(50)]
+recon_jobs = [1, 2, 3]
 
 nrecon_per_job = int(np.ceil(len(sim_nums)*len(p.exps_config)*len(p.moments)/len(recon_jobs)))
-
+add_noise = True
+obs_filter = True
 qos = 'regular'
 time = '00:30:00'
 OMP_NUM_THREADS = 4
@@ -19,8 +21,8 @@ sim_path = p.repodir + 'src'
 args_list = []
 
 for experiment, values  in p.exps_config.items():
-    for sim_num in sim_nums:
-        for groups, moment in p.moments.items():
+    for groups, moment in p.moments.items():
+        for sim_num in sim_nums:
             args_dict = {}
             args_dict['sim_num'] = sim_num
             args_dict['experiment'] = experiment
@@ -52,7 +54,7 @@ for i, recon_job in enumerate(recon_jobs):
     
     # write processes in one job
     for recon_param in recon_job_chuncks[i]:
-        f.write('OMP_NUM_THREADS=%s python recon.py --sim_num %s --experiment \'%s\' --nlev_t %s --beam_arcmin %s --ellmin %s --ellmax %s --delta_L %s --pure %s & sleep 1\n' %(OMP_NUM_THREADS, recon_param['sim_num'], recon_param['experiment'], recon_param['nlev_t'], recon_param['beam_arcmin'], recon_param['ellmin'], recon_param['ellmax'], recon_param['delta_L'], recon_param['pure']))
+        f.write('OMP_NUM_THREADS=%s python recon.py --sim_num %s --experiment \'%s\' --nlev_t %s --beam_arcmin %s --ellmin %s --ellmax %s --delta_L %s --pure %s --add_noise --obs_filter & sleep 1\n' %(OMP_NUM_THREADS, recon_param['sim_num'], recon_param['experiment'], recon_param['nlev_t'], recon_param['beam_arcmin'], recon_param['ellmin'], recon_param['ellmax'], recon_param['delta_L'], recon_param['pure']))
         
     f.write('wait\n')
     f.close()

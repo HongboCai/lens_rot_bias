@@ -2,8 +2,10 @@ import sys, os, time
 import numpy as np
 import param as p
 
-sim_nums = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-sim_jobs = [1, 2, 3, 4, 5]
+# sim_nums = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+sim_nums = [i for i in range(100)]
+# sim_jobs = [1, 2, 3, 4, 5]
+sim_jobs = [i for i in range(50)]
 nsim_per_job = np.ceil(len(sim_nums)/len(sim_jobs))
 
 sim_num_chuncks = np.array_split(sim_nums, len(sim_jobs))

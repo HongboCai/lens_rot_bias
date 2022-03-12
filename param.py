@@ -43,7 +43,9 @@ exps_config = {
 #     }
 # }
 
-moments = {'moments1':{'ellmin':30, 'ellmax':3000, 'delta_L':150},'moments2':{'ellmin':30, 'ellmax':4000, 'delta_L':200}}
+# moments = {'moments1':{'ellmin':30, 'ellmax':3000, 'delta_L':150},'moments2':{'ellmin':30, 'ellmax':4000, 'delta_L':200}}
+
+moments = {'moments1':{'ellmin':30, 'ellmax':3000, 'delta_L':150}}
 
 # 'pure', 'no', default='standard'
 pure = 'no'

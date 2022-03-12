@@ -42,7 +42,7 @@ parser.add_argument('--ellmax', type=int, help='ellmax of CMB', default=3000)
 parser.add_argument('--delta_L', type=int, help='delta_L of Kappa', default=150)
 parser.add_argument('--pure', type=str, default='standard', help='purify method')
 parser.add_argument('--logfile', default='log.txt')
-parser.add_argument('--add-noise', action='store_false')
+parser.add_argument('--add_noise')
 parser.add_argument('--nside', default=1024)
 
 args = parser.parse_args()
@@ -72,7 +72,7 @@ with bench.show("read alm"):
 lmax = hp.Alm.getlmax(teb_alm.shape[-1])
 lmax = defaults['lmax_write']
 # generate noise realization
-if args.add_noise:
+if args.add_noise == True:
     ls  = np.arange(lmax+1)
     nl  = (params['nlev_p']*np.pi/180/60)**2/maps.gauss_beam(ls, params['beam_arcmin'])**2
     nl  = np.stack([nl/2, nl, nl, nl*0], axis=0)
@@ -96,14 +96,24 @@ theory = cosmology.default_theory()
 ls = np.arange(0, lmax+1)
 clee = theory.lCl('EE', ls)
 clbb = theory.lCl('BB', ls)
-oclee = clee # + nlee
-oclbb = clbb # + nlbb
+
+nlee = (params['nlev_p']*np.pi/180/60)**2/maps.gauss_beam(ls, params['beam_arcmin'])**2
+nlbb = nlee
+oclee = clee + nlee
+oclbb = clbb + nlbb
 
 oclee[0], oclee[1], oclbb[0], oclbb[1] = 1, 1, 1, 1
-Elm = hp.almxfl(teb_alm[1], 1/oclee)
-Blm = hp.almxfl(teb_alm[2], 1/oclbb)
-Elm_rot = hp.almxfl(teb_rot_alm[1], 1/oclee)
-Blm_rot = hp.almxfl(teb_rot_alm[2], 1/oclbb)
+if args.add_noise:
+    Elm = hp.almxfl(teb_alm[1]+nlm[1], 1/oclee)
+    Blm = hp.almxfl(teb_alm[2]+nlm[2], 1/oclbb)
+    Elm_rot = hp.almxfl(teb_rot_alm[1]+nlm[1], 1/oclee)
+    Blm_rot = hp.almxfl(teb_rot_alm[2]+nlm[1], 1/oclbb)
+else:
+    Elm = hp.almxfl(teb_alm[1], 1/oclee)
+    Blm = hp.almxfl(teb_alm[2], 1/oclbb)
+    Elm_rot = hp.almxfl(teb_rot_alm[1], 1/oclee)
+    Blm_rot = hp.almxfl(teb_rot_alm[2], 1/oclbb)
+
 
 # convert alm to healpix order to be compatible with clp
 
@@ -152,11 +162,15 @@ data_dict['EB_inkap_x_inkap'] = EB_inkap_x_inkap
 data_dict['EB_inkap_x_reckap'] = EB_inkap_x_reckap
 data_dict['EB_rot_inkap_x_reckap'] = EB_rot_inkap_x_reckap
 
-data_dict['EB_reckap_x_reckap'] = EB_inkap_x_reckap
-data_dict['EB_rot_reckap_x_reckap'] = EB_rot_inkap_x_reckap
+data_dict['EB_reckap_x_reckap'] = EB_reckap_x_reckap
+data_dict['EB_rot_reckap_x_reckap'] = EB_rot_reckap_x_reckap
 
 data_df = pd.DataFrame(data_dict)
-data_df.to_csv(defaults['odir'] + f'%s_%s_%s_%s.csv' %(params['experiment'], isim, params['ellmin'],params['ellmax']), index=False)
+if args.add_noise:
+    data_df.to_csv(defaults['odir'] + f'%s_%s_%s_%s_n.csv' %(params['experiment'], isim, params['ellmin'],params['ellmax']), index=False)
+else:
+    data_df.to_csv(defaults['odir'] + f'%s_%s_%s_%s.csv' %(params['experiment'], isim, params['ellmin'],params['ellmax']), index=False)
+
 
 
 

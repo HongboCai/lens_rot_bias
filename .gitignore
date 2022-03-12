@@ -1,4 +1,5 @@
 .ipynb_checkpoints
 *.fits
+*.csv
 ltximg
 __pycache__
