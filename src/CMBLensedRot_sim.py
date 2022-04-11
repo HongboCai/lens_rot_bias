@@ -12,13 +12,14 @@ sys.path.append(os.path.dirname(os.getcwd()))
 import param as p
 
 defaults = {
-    'odir': '../simMaps',
+    'odir': '../Maps',
     'lmax': p.lmax,
     'lmax_write': p.lmax_write,
     'pix_size': p.px_arcmin,
-    'A_cb': 1E-5, 
-    'alpha_ps': '../inputPs/claa_A1E-5.txt'
+    'A_cb': 1E-7, 
 }
+
+alpha_ps = f'../inputPs/claa_A%s.txt'%defaults['A_cb']
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--sim_num', type=int, help='the number of simulation')
@@ -26,7 +27,7 @@ parser.add_argument("--odir",       type=str, default=defaults['odir'], help="Ou
 parser.add_argument("--lmax",       type=int, default=defaults['lmax'],       help="Max multipole for lensing")
 parser.add_argument("--lmax-write", type=int, default=defaults['lmax_write'], help="Max multipole to write")
 parser.add_argument("--pix-size",   type=float, default=defaults['pix_size'], help="Pixel width in arcmin")
-parser.add_argument("--alpha_ps",         type=str, default=defaults['alpha_ps'], help="Input alpha file")
+parser.add_argument("--alpha_ps",         type=str, default=alpha_ps, help="Input alpha file")
                     
 args = parser.parse_args()
 if not op.exists(args.odir): os.makedirs(args.odir)

@@ -15,7 +15,7 @@ import param as p
 from math import pi
 
 defaults = {
-    'odir': '../simMaps',
+    'odir': p.repodir + 'Maps',
     'lmax': p.lmax,
     'lmax_write': p.lmax_write,
     'pix_size': p.px_arcmin,
@@ -36,7 +36,7 @@ args = parser.parse_args()
 if not op.exists(args.odir): os.makedirs(args.odir)
 cmb_dir = args.odir
 
-logging.basicConfig(filename=f'{cmb_dir}/log.txt', level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s',filemode='w')
+# logging.basicConfig(filename=f'{cmb_dir}/log.txt', level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s',filemode='w')
 
 shape, wcs = enmap.fullsky_geometry(args.pix_size*utils.arcmin)
 phi_ps = powspec.read_camb_full_lens(args.phi_ps)
@@ -58,7 +58,7 @@ clpp = np.concatenate(([0,0], clpp))/fac
 
 isim = args.sim_num
 
-logging.info(f'doing sim {isim}, calling lensing.rand_map')
+# logging.info(f'doing sim {isim}, calling lensing.rand_map')
 cmb_seed = (isim, 0, 0, 0)
 phi_seed = (isim, 0, 2, 0)
 
@@ -70,11 +70,11 @@ l_tqu_map, = lensing.rand_map((3,)+shape, wcs, phi_ps,
                             seed=cmb_seed,
                             verbose=True)
     
-logging.info('calling curvedsky.map2alm')
+# logging.info('calling curvedsky.map2alm')
 alm = curvedsky.map2alm(l_tqu_map, lmax=args.lmax_write, spin=[0,2])
 
 filename = cmb_dir + f"/CMBLensed_fullsky_alm_{isim:03d}.fits"
-logging.info(f'writing to disk, filename is {filename}')
+# logging.info(f'writing to disk, filename is {filename}')
 hp.write_alm(filename, np.complex64(alm), overwrite=True)
 del alm
     

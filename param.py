@@ -17,12 +17,19 @@ lmax_write = 6000
 
 
 # loop parameters
+# exps_config = {
+#    'CMB_S3': {
+#        'nlev_t': 7,
+#        'nlev_p': 7*2**0.5,
+#        'beam_arcmin': 1.4
+#    }
+#}
 exps_config = {
-    'CMB_S3': {
-        'nlev_t': 7,
-        'nlev_p': 7*2**0.5,
-        'beam_arcmin': 1.4
-    }
+     'CMB_S4': {
+         'nlev_t': 1,
+         'nlev_p':2**0.5,
+         'beam_arcmin': 3
+     }
 }
 
 # exps_config = {
@@ -43,9 +50,9 @@ exps_config = {
 #     }
 # }
 
-# moments = {'moments1':{'ellmin':30, 'ellmax':3000, 'delta_L':150},'moments2':{'ellmin':30, 'ellmax':4000, 'delta_L':200}}
+moments = {'moments1':{'ellmin':30, 'ellmax':3000, 'delta_L':150},'moments2':{'ellmin':30, 'ellmax':4000, 'delta_L':200}}
 
-moments = {'moments1':{'ellmin':30, 'ellmax':3000, 'delta_L':150}}
+# moments = {'moments1':{'ellmin':30, 'ellmax':3000, 'delta_L':150}}
 
 # 'pure', 'no', default='standard'
 pure = 'no'
