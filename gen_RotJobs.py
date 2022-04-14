@@ -19,7 +19,7 @@ src_path = p.repodir + 'src/'
 
 # generate rot maps
 for i, rot_job in enumerate(rot_job_nums):
-    f = open(job_path + 'rot_job_%s.sh' %rot_job, 'w')
+    f = open(job_path + 'rot_job_%s.sh' %rot_job_nums, 'w')
     f.write('#!/bin/bash\n')
     f.write('#SBATCH --qos %s\n' %qos)
     f.write('#SBATCH --constraint=haswell\n')
