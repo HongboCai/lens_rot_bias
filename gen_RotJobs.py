@@ -3,7 +3,7 @@ import numpy as np
 import param as p
 
 # jobs of generating all rot lensed CMB maps
-rot_nums = [0,1]
+rot_nums = [i for i in range(2,10)]
 nrot_per_job = 4
 
 rot_job_nums = [i for i in range(int(np.ceil(len(rot_nums)/nrot_per_job)))]
@@ -19,7 +19,7 @@ src_path = p.repodir + 'src/'
 
 # generate rot maps
 for i, rot_job in enumerate(rot_job_nums):
-    f = open(job_path + 'rot_job_%s.sh' %rot_job_nums, 'w')
+    f = open(job_path + 'rot_job_%s.sh' %rot_job, 'w')
     f.write('#!/bin/bash\n')
     f.write('#SBATCH --qos %s\n' %qos)
     f.write('#SBATCH --constraint=haswell\n')

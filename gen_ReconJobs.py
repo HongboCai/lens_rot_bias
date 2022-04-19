@@ -2,16 +2,16 @@ import sys, os, time
 import numpy as np
 import param as p
 
-sim_nums = [0,1]
-rot_nums = [0,1]
-nrecon_per_job = 4
+sim_nums = [i for i in range(10)]
+rot_nums = [i for i in range(10)]
+nrecon_per_job = 2
 
 recon_sim_job_nums = [i for i in range(int(np.ceil(len(sim_nums*len(p.exps_config)*len(p.moments))/nrecon_per_job)))]
 recon_rot_job_nums = [i for i in range(int(np.ceil(len(rot_nums*len(p.exps_config)*len(p.moments))/nrecon_per_job)))]
 
-add_noise = True
+add_noise = False
 qos = 'regular'
-time = '00:30:00'
+time = '08:00:00'
 OMP_NUM_THREADS = 4
 n_tasks_per_node = int(nrecon_per_job * OMP_NUM_THREADS)
 
@@ -54,8 +54,13 @@ for i, recon_job in enumerate(recon_sim_job_nums):
     f.write('cd %s\n\n' %src_path)
     
     # write processes in one job
-    for recon_param in recon_param_chuncks[i]:
-        f.write('OMP_NUM_THREADS=%s python recon.py --cmb_map \'%s\' --experiment \'%s\' --nlev_t %s --beam_arcmin %s --ellmin %s --ellmax %s --delta_L %s --add_noise & sleep 1\n' %(OMP_NUM_THREADS, recon_param['cmb_map'], recon_param['experiment'], recon_param['nlev_t'], recon_param['beam_arcmin'], recon_param['ellmin'], recon_param['ellmax'], recon_param['delta_L']))
+    if add_noise == True:
+        for recon_param in recon_param_chuncks[i]:
+            f.write('OMP_NUM_THREADS=%s python recon.py --cmb_map \'%s\' --experiment \'%s\' --nlev_t %s --beam_arcmin %s --ellmin %s --ellmax %s --delta_L %s --add_noise & sleep 1\n' %(OMP_NUM_THREADS, recon_param['cmb_map'], recon_param['experiment'], recon_param['nlev_t'], recon_param['beam_arcmin'], recon_param['ellmin'], recon_param['ellmax'], recon_param['delta_L']))
+    else:
+        for recon_param in recon_param_chuncks[i]:
+            f.write('OMP_NUM_THREADS=%s python recon.py --cmb_map \'%s\' --experiment \'%s\' --nlev_t %s --beam_arcmin %s --ellmin %s --ellmax %s --delta_L %s & sleep 1\n' %(OMP_NUM_THREADS, recon_param['cmb_map'], recon_param['experiment'], recon_param['nlev_t'], recon_param['beam_arcmin'], recon_param['ellmin'], recon_param['ellmax'], recon_param['delta_L']))
+    
         
     f.write('wait\n')
     f.close()
@@ -96,8 +101,12 @@ for i, recon_job in enumerate(recon_rot_job_nums):
     f.write('cd %s\n\n' %src_path)
     
     # write processes in one job
-    for recon_param in recon_param_chuncks[i]:
-        f.write('OMP_NUM_THREADS=%s python recon.py --cmb_map \'%s\' --experiment \'%s\' --nlev_t %s --beam_arcmin %s --ellmin %s --ellmax %s --delta_L %s --add_noise & sleep 1\n' %(OMP_NUM_THREADS, recon_param['cmb_map'], recon_param['experiment'], recon_param['nlev_t'], recon_param['beam_arcmin'], recon_param['ellmin'], recon_param['ellmax'], recon_param['delta_L']))
+    if add_noise == True:
+        for recon_param in recon_param_chuncks[i]:
+            f.write('OMP_NUM_THREADS=%s python recon.py --cmb_map \'%s\' --experiment \'%s\' --nlev_t %s --beam_arcmin %s --ellmin %s --ellmax %s --delta_L %s --add_noise & sleep 1\n' %(OMP_NUM_THREADS, recon_param['cmb_map'], recon_param['experiment'], recon_param['nlev_t'], recon_param['beam_arcmin'], recon_param['ellmin'], recon_param['ellmax'], recon_param['delta_L']))
+    else:
+        for recon_param in recon_param_chuncks[i]:
+            f.write('OMP_NUM_THREADS=%s python recon.py --cmb_map \'%s\' --experiment \'%s\' --nlev_t %s --beam_arcmin %s --ellmin %s --ellmax %s --delta_L %s & sleep 1\n' %(OMP_NUM_THREADS, recon_param['cmb_map'], recon_param['experiment'], recon_param['nlev_t'], recon_param['beam_arcmin'], recon_param['ellmin'], recon_param['ellmax'], recon_param['delta_L']))
         
     f.write('wait\n')
     f.close()    
