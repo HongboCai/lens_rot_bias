@@ -3,7 +3,7 @@ import numpy as np
 import param as p
 
 # jobs of generating all rot lensed CMB maps
-rot_nums = [i for i in range(2,10)]
+rot_nums = [i for i in range(100,110)]
 nrot_per_job = 4
 
 rot_job_nums = [i for i in range(int(np.ceil(len(rot_nums)/nrot_per_job)))]

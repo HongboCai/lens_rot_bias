@@ -43,6 +43,7 @@ parser.add_argument('--delta_L', type=int, help='delta_L of Kappa', default=150)
 parser.add_argument('--logfile', default='log.txt')
 parser.add_argument('--add_noise', action='store_true')
 parser.add_argument('--nside', default=1024)
+parser.add_argument('--rdn0_set', type=int, help='rdn0 set number')
 
 args = parser.parse_args()
 if not(op.exists(defaults['odir'])): os.makedirs(defaults['odir'])
@@ -129,12 +130,32 @@ data_dict['reckap_cl'] = reckap_cl
 data_dict['cross_cl'] = cross_cl
 
 # calculate RDN0
-# sims1 = [f'../Maps/CMBLensed_fullsky_alm_{i:03d}.fits' for i in range(2,6)]
-# sims2 = [f'../Maps/CMBLensed_fullsky_alm_{i:03d}.fits' for i in range(6,10)]
+if args.rdn0_set == 0:
+   sims1 = [f'../Maps/CMBLensed_fullsky_alm_{i:03d}.fits' for i in range(10,35)]
+   sims2 = [f'../Maps/CMBLensed_fullsky_alm_{i:03d}.fits' for i in range(60,85)]
+if args.rdn0_set == 1:
+   sims1 = [f'../Maps/CMBLensed_fullsky_alm_{i:03d}.fits' for i in range(10,35)]
+   sims2 = [f'../Maps/CMBLensed_fullsky_alm_{i:03d}.fits' for i in range(85,110)]
+if args.rdn0_set == 2:
+   sims1 = [f'../Maps/CMBLensed_fullsky_alm_{i:03d}.fits' for i in range(35,60)]
+   sims2 = [f'../Maps/CMBLensed_fullsky_alm_{i:03d}.fits' for i in range(60,85)]
+if args.rdn0_set == 3:
+   sims1 = [f'../Maps/CMBLensed_fullsky_alm_{i:03d}.fits' for i in range(35,60)]
+   sims2 = [f'../Maps/CMBLensed_fullsky_alm_{i:03d}.fits' for i in range(85,110)]
 
-sims1 = [f'../Maps/CMBLensed_fullsky_alm_{i:03d}.fits' for i in range(10,20)]
-sims2 = [f'../Maps/CMBLensed_fullsky_alm_{i:03d}.fits' for i in range(20,30)]
 
+# if args.rdn0_set == 0:
+#     sims1 = [f'../Maps/CMBLensed_fullsky_alm_{i:03d}.fits' for i in range(10,11)]
+#     sims2 = [f'../Maps/CMBLensed_fullsky_alm_{i:03d}.fits' for i in range(60,61)]
+# if args.rdn0_set == 1:
+#     sims1 = [f'../Maps/CMBLensed_fullsky_alm_{i:03d}.fits' for i in range(10,11)]
+#     sims2 = [f'../Maps/CMBLensed_fullsky_alm_{i:03d}.fits' for i in range(85,86)]
+# if args.rdn0_set == 2:
+#     sims1 = [f'../Maps/CMBLensed_fullsky_alm_{i:03d}.fits' for i in range(35,36)]
+#     sims2 = [f'../Maps/CMBLensed_fullsky_alm_{i:03d}.fits' for i in range(60,61)]
+# if args.rdn0_set == 3:
+#     sims1 = [f'../Maps/CMBLensed_fullsky_alm_{i:03d}.fits' for i in range(10,11)]
+#     sims2 = [f'../Maps/CMBLensed_fullsky_alm_{i:03d}.fits' for i in range(85,86)]
 rdn0 = []
 
 print('calculating rdn0')
@@ -196,7 +217,7 @@ rdn0 = np.mean(np.array(rdn0), axis=0)
 
 data_dict['rdn0'] = rdn0
 data_df = pd.DataFrame(data_dict)
-data_df.to_csv('../output/recon_ps/reckap_cl_'+re.split('Maps|/|.fits', args.cmb_map)[-2]+'_%s_%s'%(args.ellmin, args.ellmax)+'.csv', index=False)        
+data_df.to_csv('../output/recon_ps/reckap_cl_'+re.split('Maps|/|.fits', args.cmb_map)[-2]+'_%s_%s_%s'%(args.rdn0_set, args.ellmin, args.ellmax)+'.csv', index=False)        
 
 
 

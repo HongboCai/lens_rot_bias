@@ -3,7 +3,7 @@ import numpy as np
 import param as p
 
 # jobs of generating all sim lensed CMB maps
-sim_nums = [i for i in range(10, 30)]
+sim_nums = [i for i in range(100, 110)]
 nsim_per_job = 3
 
 sim_job_nums = [i for i in range(int(np.ceil(len(sim_nums)/nsim_per_job)))]
