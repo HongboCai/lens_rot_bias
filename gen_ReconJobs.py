@@ -12,7 +12,7 @@ recon_rot_job_nums = [i for i in range(int(np.ceil(len(rot_nums)*len(p.exps_conf
 
 add_noise = False
 qos = 'regular'
-time = '10:00:00'
+time = '09:00:00'
 OMP_NUM_THREADS = 32
 n_tasks_per_node = int(nrecon_per_job * OMP_NUM_THREADS)
 

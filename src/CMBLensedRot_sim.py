@@ -16,7 +16,7 @@ defaults = {
     'lmax': p.lmax,
     'lmax_write': p.lmax_write,
     'pix_size': p.px_arcmin,
-    'A_cb': 1E-7, 
+    'A_cb': 1E-8, 
 }
 
 alpha_ps = f'../inputPs/claa_A%s.txt'%defaults['A_cb']

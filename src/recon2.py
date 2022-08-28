@@ -134,17 +134,17 @@ data_dict['cross_cl'] = cross_cl
 
 # calculate RDN0
 if args.rdn0_set == 0:
-   sims1 = [f'../Maps/CMBLensed_fullsky_alm_{i:03d}.fits' for i in range(10,35)]
-   sims2 = [f'../Maps/CMBLensed_fullsky_alm_{i:03d}.fits' for i in range(60,85)]
+   sims1 = [f'../Maps/CMBLensed_fullsky_alm_{i:03d}.fits' for i in range(10,5)]
+   sims2 = [f'../Maps/CMBLensed_fullsky_alm_{i:03d}.fits' for i in range(60,70)]
 if args.rdn0_set == 1:
-   sims1 = [f'../Maps/CMBLensed_fullsky_alm_{i:03d}.fits' for i in range(10,35)]
-   sims2 = [f'../Maps/CMBLensed_fullsky_alm_{i:03d}.fits' for i in range(85,110)]
+   sims1 = [f'../Maps/CMBLensed_fullsky_alm_{i:03d}.fits' for i in range(10,20)]
+   sims2 = [f'../Maps/CMBLensed_fullsky_alm_{i:03d}.fits' for i in range(85,95)]
 if args.rdn0_set == 2:
-   sims1 = [f'../Maps/CMBLensed_fullsky_alm_{i:03d}.fits' for i in range(35,60)]
-   sims2 = [f'../Maps/CMBLensed_fullsky_alm_{i:03d}.fits' for i in range(60,85)]
+   sims1 = [f'../Maps/CMBLensed_fullsky_alm_{i:03d}.fits' for i in range(35,45)]
+   sims2 = [f'../Maps/CMBLensed_fullsky_alm_{i:03d}.fits' for i in range(60,70)]
 if args.rdn0_set == 3:
-   sims1 = [f'../Maps/CMBLensed_fullsky_alm_{i:03d}.fits' for i in range(35,60)]
-   sims2 = [f'../Maps/CMBLensed_fullsky_alm_{i:03d}.fits' for i in range(85,110)]
+   sims1 = [f'../Maps/CMBLensed_fullsky_alm_{i:03d}.fits' for i in range(35,45)]
+   sims2 = [f'../Maps/CMBLensed_fullsky_alm_{i:03d}.fits' for i in range(85,95)]
 
 # create a shared memory for Elm1_sims and Blm1_sims
 Elm1_sims = create_shared_array_like(Elm, comm, shape=(len(sims1),)+Elm.shape)
@@ -165,7 +165,7 @@ if rank == 0:
         
         Elm1_sims[i,...] = curvedsky.utils.lm_healpy2healpix(Elm1, lmax)[:imax,:imax]
         Blm1_sims[i,...] = curvedsky.utils.lm_healpy2healpix(Blm1, lmax)[:imax,:imax]
-    del teb1_alm, Elm1, Blm1
+    # del teb1_alm, Elm1, Blm1
 comm.Barrier()
 
 Elm2_sims = create_shared_array_like(Elm, comm, shape=(len(sims2),)+Elm.shape)
@@ -187,7 +187,7 @@ if rank == 0:
         Elm2_sims[i,...] = curvedsky.utils.lm_healpy2healpix(Elm2, lmax)[:imax,:imax]
         Blm2_sims[i,...] = curvedsky.utils.lm_healpy2healpix(Blm2, lmax)[:imax,:imax]
 
-    del teb2_alm, Elm2, Blm2
+    # del teb2_alm, Elm2, Blm2
 comm.Barrier()
 
 if rank == 0: print('calculating rdn0')
@@ -209,7 +209,7 @@ for i in range(rank, len(Elm1_sims), size):
             curvedsky.utils.alm2cl(params['ellmax'], reckap_alm_b[0], reckap_alm_a[0])
     part1s.append(part1)
 part1s = u.allgatherv(part1s, comm)
-del part1, reckap_alm_a, reckap_alm_b
+# del part1, reckap_alm_a, reckap_alm_b
 
 if rank == 0: print('=> calculate part 2')
 rdn0 = []
@@ -231,10 +231,11 @@ for pair_idx in range(rank, len(pairs), size):
 
     rdn0.append(part1s[i]-part2)
 rdn0 = u.allgatherv(rdn0, comm)
-rdn0 = np.mean(np.array(rdn0), axis=0)
+if rank == 0:
+    rdn0 = np.mean(np.array(rdn0), axis=0)
 
-data_dict['rdn0'] = rdn0
-data_df = pd.DataFrame(data_dict)
-ofile = '../output/recon_ps/reckap_cl_'+re.split('Maps|/|.fits', args.cmb_map)[-2]+'_%s_%s_%s'%(args.rdn0_set, args.ellmin, args.ellmax)+'.csv'
-if rank == 0: print("Writing:", ofile)
-data_df.to_csv(ofile, index=False) 
+    data_dict['rdn0'] = rdn0
+    data_df = pd.DataFrame(data_dict)
+    ofile = '../output/recon_ps/reckap_cl_'+re.split('Maps|/|.fits', args.cmb_map)[-2]+'_%s_%s_%s'%(args.rdn0_set, args.ellmin, args.ellmax)+'.csv'
+    print("Writing:", ofile)
+    data_df.to_csv(ofile, index=False) 

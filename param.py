@@ -24,12 +24,25 @@ lmax_write = 6000
 #        'beam_arcmin': 1.4
 #    }
 # }
+# exps_config = {
+#      'CMB_S4': {
+#          'nlev_t': 1,
+#          'nlev_p':2**0.5,
+#          'beam_arcmin': 1.4
+#      }
+# }
+
 exps_config = {
-     'CMB_S4': {
-         'nlev_t': 1,
-         'nlev_p':2**0.5,
-         'beam_arcmin': 3
-     }
+    'CMB_S3': {
+        'nlev_t': 7,
+        'nlev_p': 7*2**0.5,
+        'beam_arcmin': 1.4
+    },
+    'CMB_S4': {
+        'nlev_t': 1,
+        'nlev_p':2**0.5,
+        'beam_arcmin': 1.4
+    }
 }
 
 # exps_config = {

@@ -3,13 +3,13 @@ import numpy as np
 import param as p
 
 # jobs of generating all rot lensed CMB maps
-rot_nums = [i for i in range(100,110)]
+rot_nums = [i for i in range(0,10)]
 nrot_per_job = 4
 
 rot_job_nums = [i for i in range(int(np.ceil(len(rot_nums)/nrot_per_job)))]
 rot_num_chuncks = np.array_split(rot_nums, len(rot_job_nums))
 
-qos = 'regular'
+qos = 'debug'
 time = '00:30:00'
 OMP_NUM_THREADS = 4
 ntasks_per_node = int(nrot_per_job * OMP_NUM_THREADS)
