@@ -5,3 +5,5 @@
 *.log*
 ltximg
 __pycache__
+*.db
+*.pk
