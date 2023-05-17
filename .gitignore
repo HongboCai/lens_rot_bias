@@ -1,9 +1,9 @@
 .ipynb_checkpoints
 *.fits
 *.csv
-*.sh
 *.log*
 ltximg
 __pycache__
 *.db
 *.pk
+/bak
