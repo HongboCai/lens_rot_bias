@@ -15,7 +15,8 @@ defaults = {
     'odir': p.repodir + 'Maps',
     'lmax': p.lmax,
     'lmax_write': p.lmax_write,
-    'pix_size': p.px_arcmin
+    'pix_size': p.px_arcmin,
+    'input_ps': '../inputPs/cosmo2017_10K_acc3_lenspotentialCls.dat',
 }
 
 parser = argparse.ArgumentParser()
@@ -26,27 +27,31 @@ parser.add_argument("--odir",       type=str, default=defaults['odir'], help="Ou
 parser.add_argument("--lmax",       type=int, default=defaults['lmax'],       help="Max multipole for lensing")
 parser.add_argument("--lmax-write", type=int, default=defaults['lmax_write'], help="Max multipole to write")
 parser.add_argument("--pix-size",   type=float, default=defaults['pix_size'], help="Pixel width in arcmin")
+parser.add_argument("--input_ps",         type=str, default=defaults['input_ps'], help="Input unlensed CMB and CMB lensing cl file")
 
 args = parser.parse_args()
 if not op.exists(args.odir): os.makedirs(args.odir)
 cmb_dir = args.odir
 
 shape, wcs = enmap.fullsky_geometry(args.pix_size*utils.arcmin)
+input_ps = np.loadtxt(args.input_ps)
+cltt = np.concatenate(([0,0], input_ps[:, 1]))
+clee = np.concatenate(([0,0], input_ps[:, 2]))
+clbb = np.concatenate(([0,0], input_ps[:, 3]))
+clte = np.concatenate(([0,0], input_ps[:, 4]))
 
 isim = args.sim_num
 
-# logging.info(f'doing sim {isim}, calling lensing.rand_map')
 cmb_seed = (isim, 0, 0, 0)
-
 # generate and write CMB_alm.fits
-alm = curvedsky.rand_alm()
+alm = hp.synalm((cltt, clee, clbb, clte), lmax=args.lmax_write, new=True)
+
+filename = cmb_dir + f"/CMB_fullsky_alm_{isim:03d}.fits"
+hp.write_alm(filename, np.complex64(alm), overwrite=True)
+
+del alm 
 
 
-l_tqu_map, = lensing.rand_map((3,)+shape, wcs, phi_ps,
-                            lmax=args.lmax,
-                            output="l",
-                            phi_seed=phi_seed,
-                            seed=cmb_seed,
-                            verbose=True)
+
 
 
