@@ -80,6 +80,13 @@ oclee[0], oclee[1], oclbb[0], oclbb[1] = 1, 1, 1, 1
 
 log("reading alm...")
 
+imax = params['ellmax'] + 1
+
+# normalization
+Al = curvedsky.norm_quad.qeb('lens', params['ellmax'],
+                             params['ellmin'], params['ellmax'], clee[:imax], oclee[:imax],
+                             oclbb[:imax])
+
 # reconstruction for the two realizations with the same lensing realization
 with bench.show("read teb_alm1 and teb_alm2"):
     teb_alm1 = hp.read_alm(args.cmb1, hdu=(1,2,3))
@@ -93,19 +100,21 @@ Blm1 = curvedsky.utils.lm_healpy2healpix(Blm1, lmax)
 
 Elm2 = hp.almxfl(teb_alm2[1], 1/oclee)
 Blm2 = hp.almxfl(teb_alm2[2], 1/oclbb)
-Elm2 = curvedsky.utils.lm_healpy2healpix(Elm1, lmax)
-Blm2 = curvedsky.utils.lm_healpy2healpix(Blm1, lmax)
+Elm2 = curvedsky.utils.lm_healpy2healpix(Elm2, lmax)
+Blm2 = curvedsky.utils.lm_healpy2healpix(Blm2, lmax)
     
 reckap_alm_a = curvedsky.rec_lens.qeb(params['ellmax'],
                                       params['ellmin'], params['ellmax'], clee[:imax], Elm1[:imax,:imax],
                                       Blm2[:imax,:imax])
+reckap_alm_a *= Al[0][:,None]
 
 reckap_alm_b = curvedsky.rec_lens.qeb(params['ellmax'],
                                       params['ellmin'], params['ellmax'], clee[:imax], Elm2[:imax,:imax],
                                       Blm1[:imax,:imax])
+reckap_alm_b *= Al[0][:,None]
 
-term1 = curvedsky.utils.alm2cl(params['ellmax'], reckap_alm_a)
-term2 = curvedsky.utils.alm2cl(params['ellmax'], reckap_alm_a, alm2=reckap_alm_b)
+term1 = curvedsky.utils.alm2cl(params['ellmax'], reckap_alm_a[0])
+term2 = curvedsky.utils.alm2cl(params['ellmax'], reckap_alm_a[0], alm2=reckap_alm_b[0])
 
 del teb_alm1, teb_alm2, Elm1, Blm1, Elm2, Blm2, reckap_alm_a, reckap_alm_b
 
@@ -117,37 +126,35 @@ with bench.show("read teb_alm2 and teb_alm3"):
 
 Elm3 = hp.almxfl(teb_alm3[1], 1/oclee)
 Blm3 = hp.almxfl(teb_alm3[2], 1/oclbb)
-Elm3 = curvedsky.utils.lm_healpy2healpix(Elm1, lmax)
-Blm3 = curvedsky.utils.lm_healpy2healpix(Blm1, lmax)
+Elm3 = curvedsky.utils.lm_healpy2healpix(Elm3, lmax)
+Blm3 = curvedsky.utils.lm_healpy2healpix(Blm3, lmax)
 
 
 Elm4 = hp.almxfl(teb_alm4[1], 1/oclee)
 Blm4 = hp.almxfl(teb_alm4[2], 1/oclbb)
-Elm4 = curvedsky.utils.lm_healpy2healpix(Elm1, lmax)
-Blm4 = curvedsky.utils.lm_healpy2healpix(Blm1, lmax)    
+Elm4 = curvedsky.utils.lm_healpy2healpix(Elm4, lmax)
+Blm4 = curvedsky.utils.lm_healpy2healpix(Blm4, lmax)    
 
 reckap_alm_c = curvedsky.rec_lens.qeb(params['ellmax'],
                                       params['ellmin'], params['ellmax'], clee[:imax], Elm3[:imax,:imax],
                                       Blm4[:imax,:imax])
+reckap_alm_c *= Al[0][:,None]
 
 reckap_alm_d = curvedsky.rec_lens.qeb(params['ellmax'],
                                       params['ellmin'], params['ellmax'], clee[:imax], Elm4[:imax,:imax],
                                       Blm3[:imax,:imax])
+reckap_alm_d *= Al[0][:,None]
 
-term3 = curvedsky.utils.alm2cl(params['ellmax'], reckap_alm_c)
-term4 = curvedsky.utils.alm2cl(params['ellmax'], reckap_alm_c, alm2=reckap_alm_d)
+term3 = curvedsky.utils.alm2cl(params['ellmax'], reckap_alm_c[0])
+term4 = curvedsky.utils.alm2cl(params['ellmax'], reckap_alm_c[0], alm2=reckap_alm_d[0])
 
 del teb_alm3, teb_alm4, Elm3, Blm3, Elm4, Blm4, reckap_alm_c, reckap_alm_d
 
-# normalization
-Al = curvedsky.norm_quad.qeb('lens', params['ellmax'],
-                             params['ellmin'], params['ellmax'], clee[:imax], oclee[:imax],
-                             oclbb[:imax])
 
 # N1aa with two pairs of realizations
-N1aa = Al[0][:,None]*Al[0][:,None]*(term1 + term2 - term3 - term4)
+N1aa = term1 + term2 - term3 - term4
 
-np.savetxt('../output/N1aa/N1aa_%s_%s_%s'%(args.experiement, args.ellmin, args.ellmax)+'.dat')
+np.savetxt('../output/N1aa/N1aa_%s_%s_%s'%(args.experiment, args.ellmin, args.ellmax)+'.dat', N1aa)
 
 
 
