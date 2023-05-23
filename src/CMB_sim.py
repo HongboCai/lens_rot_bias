@@ -5,6 +5,7 @@ from pixell import enmap, utils, lensing, aberration
 from pixell import powspec, curvedsky
 import numpy as np, healpy as hp, logging, os, os.path as op
 import argparse
+from numpy import pi
 
 # add the parent dir in the python path
 sys.path.append(os.path.dirname(os.getcwd()))
@@ -33,12 +34,16 @@ args = parser.parse_args()
 if not op.exists(args.odir): os.makedirs(args.odir)
 cmb_dir = args.odir
 
+ls = np.arange(args.lmax+1)
+fac = ls*(ls+1)/(2*pi)
+fac[0] = 1
+
 shape, wcs = enmap.fullsky_geometry(args.pix_size*utils.arcmin)
 input_ps = np.loadtxt(args.input_ps)
-cltt = np.concatenate(([0,0], input_ps[:, 1]))
-clee = np.concatenate(([0,0], input_ps[:, 2]))
-clbb = np.concatenate(([0,0], input_ps[:, 3]))
-clte = np.concatenate(([0,0], input_ps[:, 4]))
+cltt = np.concatenate(([0,0], input_ps[:, 1]))[ls]/fac
+clee = np.concatenate(([0,0], input_ps[:, 2]))[ls]/fac
+clbb = np.concatenate(([0,0], input_ps[:, 3]))[ls]/fac
+clte = np.concatenate(([0,0], input_ps[:, 4]))[ls]/fac
 
 isim = args.sim_num
 

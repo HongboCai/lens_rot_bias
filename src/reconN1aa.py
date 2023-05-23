@@ -29,10 +29,12 @@ def log(text):
 # define parser
 parser = argparse.ArgumentParser()
 
+parser.add_argument('--num', type=int, help='result num')
 parser.add_argument('--cmb1', type=str, help='the input cmb1')
 parser.add_argument('--cmb2', type=str, help='the input cmb2')
 parser.add_argument('--cmb3', type=str, help='the input cmb3')
 parser.add_argument('--cmb4', type=str, help='the input cmb4')
+parser.add_argument('--A_cb', type=float, help='A_cb')
 
 parser.add_argument('--experiment', type=str, help='experiment name')
 parser.add_argument("--mapdir",       type=str, default=defaults['mapdir'], help="Output directory")
@@ -154,7 +156,7 @@ del teb_alm3, teb_alm4, Elm3, Blm3, Elm4, Blm4, reckap_alm_c, reckap_alm_d
 # N1aa with two pairs of realizations
 N1aa = term1 + term2 - term3 - term4
 
-np.savetxt('../output/N1aa/N1aa_%s_%s_%s'%(args.experiment, args.ellmin, args.ellmax)+'.dat', N1aa)
+np.savetxt('../output/N1aa/N1aa_%s_%s_%s_%s_%s'%(args.num, args.A_cb, args.experiment, args.ellmin, args.ellmax)+'.dat', N1aa)
 
 
 
