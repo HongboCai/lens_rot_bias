@@ -17,7 +17,7 @@ defaults = {
     'lmax': p.lmax,
     'lmax_write': p.lmax_write,
     'pix_size': p.px_arcmin,
-    'A_cb': 1E-7, 
+    'A_cb': 1E-8, 
 }
 
 parser = argparse.ArgumentParser()
