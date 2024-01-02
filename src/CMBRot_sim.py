@@ -5,7 +5,6 @@ from pixell import enmap, utils, lensing, aberration
 from pixell import powspec, curvedsky
 import numpy as np, healpy as hp, logging, os, os.path as op
 import argparse
-import pdb
 import healpy as hp
 
 # add the parent dir in the python path
@@ -23,6 +22,7 @@ defaults = {
 parser = argparse.ArgumentParser()
 parser.add_argument('--sim_num', type=int, help='the number of simulation')
 parser.add_argument('--alpha_num', type=int, help='the number of alpha map')
+parser.add_argument('--beta', type=float, help="abs rotation angle in degrees", default=None)
 parser.add_argument("--odir",       type=str, default=defaults['odir'], help="Output directory")
 parser.add_argument("--lmax",       type=int, default=defaults['lmax'],       help="Max multipole for lensing")
 parser.add_argument("--lmax-write", type=int, default=defaults['lmax_write'], help="Max multipole to write")
@@ -39,10 +39,15 @@ isim = args.sim_num
 alpha_num = args.alpha_num
 
 # read in alpha alm and project to map space
-print("Reading in alpha_alm")
-alpha_alm = hp.read_alm(cmb_dir + f"/alpha_fullsky_alm_{defaults['A_cb']}_{alpha_num:03d}.fits")
-print("Generating alpha map")
-alpha_map = curvedsky.alm2map(alpha_alm, enmap.zeros(oshape, owcs), spin=0)
+if args.beta is not None:
+    print("Generating alpha map with beta = ", args.beta)
+    beta = np.deg2rad(args.beta)
+    alpha_map = enmap.zeros(oshape, owcs) + beta
+else:
+    print("Reading in alpha_alm")
+    alpha_alm = hp.read_alm(cmb_dir + f"/alpha_fullsky_alm_{defaults['A_cb']}_{alpha_num:03d}.fits")
+    print("Generating alpha map")
+    alpha_map = curvedsky.alm2map(alpha_alm, enmap.zeros(oshape, owcs), spin=0)
 
 # read in cmb alm and project to map space
 print("Reading in cmb_alm")
