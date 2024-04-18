@@ -9,12 +9,12 @@ def get_bias(path, imin=30):
         files = glob.glob(op.join(path, f"*_CMBLensed_fullsky_alm_{i:03d}_*.csv"))
         rot_files = glob.glob(op.join(path, f"*_CMBLensedRot_fullsky_alm_{i:03d}_*.csv"))
         lensed = np.stack([pd.read_csv(f).values for f in files], axis=0)
-        rot_lensed = np.stack([pd.read_csv(f).values for f in rot_files], axis=0) 
+        rot_lensed = np.stack([pd.read_csv(f).values for f in rot_files], axis=0)
         ell = np.arange(lensed.shape[1])[imin:]
         clpp = np.mean(lensed, axis=0)[imin:,0]
         xclpp = np.mean(lensed, axis=0)[imin:,1]
         rdn0 = np.mean(lensed, axis=0)[imin:,2]
-        
+
         clpp_rot = np.mean(rot_lensed, axis=0)[imin:,0]
         xclpp_rot = np.mean(rot_lensed, axis=0)[imin:,1]
         rdn0_rot = np.mean(rot_lensed, axis=0)[imin:,2]
@@ -29,7 +29,7 @@ def get_rdn0(path, imin=30):
         files = glob.glob(op.join(path, f"*_CMBLensed_fullsky_alm_{i:03d}_*.csv"))
         rot_files = glob.glob(op.join(path, f"*_CMBLensedRot_fullsky_alm_{i:03d}_*.csv"))
         lensed = np.stack([pd.read_csv(f).values for f in files], axis=0)
-        rot_lensed = np.stack([pd.read_csv(f).values for f in rot_files], axis=0) 
+        rot_lensed = np.stack([pd.read_csv(f).values for f in rot_files], axis=0)
         ell = np.arange(lensed.shape[1])[imin:]
         rdn0 = np.mean(lensed, axis=0)[imin:,2]
         rdn0_rot = np.mean(rot_lensed, axis=0)[imin:,2]
@@ -156,7 +156,7 @@ rdn0_mean_s3 = np.mean(rdn0s_bin_s3, axis=0)
 rdn0_err_s3  = np.std(rdn0s_bin_s3, axis=0)
 rdn0_mean_n0 = np.mean(rdn0s_bin_n0, axis=0)
 rdn0_err_n0  = np.std(rdn0s_bin_n0, axis=0)
-# %% 
+# %%
 # plot results
 fig = plt.figure(figsize=(6,4), dpi=140)
 ax = fig.add_subplot(111)
@@ -221,9 +221,9 @@ ax = fig.add_subplot(111)
 ax.errorbar(ell_bin, bias_n6_mean/10, yerr=bias_n6_err/10, fmt="r.",label=r'$(A_{\mathrm{CB}}=10^{-6})/10$')
 ax.errorbar(ell_bin+30, bias_n7_mean, yerr=bias_n7_err, fmt="g.", label=r'$A_{\mathrm{CB}}=10^{-7}$')
 ax.errorbar(ell_bin+60, bias_n8_mean*10, yerr=bias_n8_err*10, fmt="b.", label=r'$(A_{\mathrm{CB}}=10^{-8})\times 10$')
-ax.plot(ell_bin, n1aa_n6_bin/10, "r--", label=r'$N^{(1)}_{L}$: $(A_{\mathrm{CB}}=10^{-6})/10$', alpha=0.5)
-ax.plot(ell_bin, n1aa_n7_bin, "g--", label=r'$N^{(1)}_{L}$: $A_{\mathrm{CB}}=10^{-7}$', alpha=0.5)
-ax.plot(ell_bin, n1aa_n8_bin*10, "b--", label=r'$N^{(1)}_{L}$: $(A_{\mathrm{CB}}=10^{-8})\times 10$', alpha=0.5)
+ax.plot(ell_bin, n1aa_n6_bin/10, "r--", label=r'$N^{(1, \alpha \alpha)}_{L}$: $(A_{\mathrm{CB}}=10^{-6})/10$', alpha=0.5)
+ax.plot(ell_bin, n1aa_n7_bin, "g--", label=r'$N^{(1, \alpha \alpha)}_{L}$: $A_{\mathrm{CB}}=10^{-7}$', alpha=0.5)
+ax.plot(ell_bin, n1aa_n8_bin*10, "b--", label=r'$N^{(1, \alpha \alpha)}_{L}$: $(A_{\mathrm{CB}}=10^{-8})\times 10$', alpha=0.5)
 ax.set_xlabel("$L$")
 ax.set_ylabel('$(\Delta \hat{{C}}^{\mathrm{\phi \phi}}_{L})_{\mathrm{rot}}/C^{\mathrm{\phi \phi}}_{L}$')
 ax.legend()
