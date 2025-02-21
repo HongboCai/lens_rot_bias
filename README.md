@@ -7,12 +7,16 @@ If you use our code in a published work, please cite our papers:
 ```
 @article{Cai:2022zad,
     author = "Cai, Hongbo and Guan, Yilun and Namikawa, Toshiya and Kosowsky, Arthur",
-    title = "{Impact of Anisotropic Birefringence on Measuring Cosmic Microwave Background Lensing}",
+    title = "{Impact of anisotropic birefringence on measuring cosmic microwave background lensing}",
     eprint = "2209.08749",
     archivePrefix = "arXiv",
     primaryClass = "astro-ph.CO",
-    month = "9",
-    year = "2022"
+    doi = "10.1103/PhysRevD.107.043513",
+    journal = "Phys. Rev. D",
+    volume = "107",
+    number = "4",
+    pages = "043513",
+    year = "2023"
 }
 
 @article{Cai:2024zau,
