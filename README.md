@@ -3,7 +3,7 @@
 # Bias from Rotational Field to Lensing Reconstruction
 
 ## Cite us
-If you use our code in a published work, please cite our paper:
+If you use our code in a published work, please cite our papers:
 ```
 @article{Cai:2022zad,
     author = "Cai, Hongbo and Guan, Yilun and Namikawa, Toshiya and Kosowsky, Arthur",
@@ -13,5 +13,19 @@ If you use our code in a published work, please cite our paper:
     primaryClass = "astro-ph.CO",
     month = "9",
     year = "2022"
+}
+
+@article{Cai:2024zau,
+    author = "Cai, Hongbo and Guan, Yilun and Namikawa, Toshiya and Kosowsky, Arthur",
+    title = "{Efficient estimation of rotation-induced bias to reconstructed CMB lensing power spectrum}",
+    eprint = "2408.13612",
+    archivePrefix = "arXiv",
+    primaryClass = "astro-ph.CO",
+    doi = "10.1103/PhysRevD.110.103507",
+    journal = "Phys. Rev. D",
+    volume = "110",
+    number = "10",
+    pages = "103507",
+    year = "2024"
 }
 ```
